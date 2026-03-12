@@ -455,7 +455,12 @@ void MainWindow::startRecording() {
 		}
 		qInfo() << "Missing: " << missingStreams;
 
-		currentRecording = std::make_unique<recording>(recFilename.toStdString(),
+		std::string participant = ui->lineEdit_participant->text().toStdString();
+		std::string session = ui->lineEdit_session->text().toStdString();
+		std::string task = ui->input_blocktask->currentText().toStdString();
+		std::string run = "";
+
+		currentRecording = std::make_unique<recording>(recFilename.toStdString(), participant, session, task, run, 
 			requestedAndAvailableStreams, watchfor, syncOptionsByStreamName, true);
 		ui->stopButton->setEnabled(true);
 		ui->startButton->setEnabled(false);

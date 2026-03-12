@@ -1,7 +1,7 @@
 #include "xdfwriter.h"
 
 int main(int argc, char **argv) {
-	XDFWriter w("test.xdf");
+	XDFWriter w("test.xdf", "", "", "", "");
 	const uint32_t sid = 0x02C0FFEE;
 	const std::string footer(
 		"<?xml version=\"1.0\"?>"
@@ -12,6 +12,7 @@ int main(int argc, char **argv) {
 		"<clock_offsets>"
 		"<offset><time>50979.7660030605</time><value>-3.436503902776167e-06</value></offset>"
 		"</clock_offsets></info>");
+
 	w.write_stream_header(0, "<?xml version=\"1.0\"?>"
 							 "<info>"
 							 "<name>SendDataC</name>"

@@ -1,10 +1,10 @@
 #include "recording.h"
 #include "xdfwriter.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 	if (argc < 3 || (argc == 2 && std::string(argv[1]) == "-h")) {
 		std::cout << "Usage: " << argv[0] << " outputfile.xdf 'searchstr' ['searchstr2' ...]\n\n"
-				  << "searchstr can be anything accepted by lsl_resolve_bypred\n";
+			<< "searchstr can be anything accepted by lsl_resolve_bypred\n";
 		std::cout << "Keep in mind that your shell might remove quotes\n";
 		std::cout << "Examples:\n\t" << argv[0] << " foo.xdf 'type=\"EEG\"' ";
 		std::cout << " 'host=\"LabPC1\" or host=\"LabPC2\"'\n\t";
@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 
 	for (int i = 2; i < argc; ++i) {
 		bool matched = false;
-		for (const auto &info : infos) {
+		for (const auto& info : infos) {
 			if (info.matches_query(argv[i])) {
 				std::cout << "Found " << info.name() << '@' << info.hostname();
 				std::cout << " matching '" << argv[i] << "'\n";
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 	std::vector<std::string> watchfor;
 	std::map<std::string, int> sync_options;
 	std::cout << "Starting the recording, press Enter to quit" << std::endl;
-	recording r(argv[1], recordstreams, watchfor, sync_options, true);
+	recording r(argv[1], argv[2], argv[3], argv[4], argv[5], recordstreams, watchfor, sync_options, true);
 	std::cin.get();
 	return 0;
 }

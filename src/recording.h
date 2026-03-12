@@ -63,7 +63,7 @@ public:
 	 *there").
 	 * @param collect_offsets Whether to collect time offset measurements periodically.
 	 */
-	recording(const std::string &filename, const std::vector<lsl::stream_info> &streams,
+	recording(const std::string &filename, const std::string& participant, const std::string& session, const std::string& task, const std::string& run, const std::vector<lsl::stream_info> &streams,
 		const std::vector<std::string> &watchfor, std::map<std::string, int> syncOptions,
 		bool collect_offsets = true);
 

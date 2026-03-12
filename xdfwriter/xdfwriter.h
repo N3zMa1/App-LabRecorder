@@ -46,7 +46,10 @@ public:
 	 * @brief XDFWriter Construct a XDFWriter object
 	 * @param filename  Filename to write to
 	 */
-	XDFWriter(const std::string &filename);
+	XDFWriter(const std::string &filename, const std::string& participant,
+		const std::string& session,
+		const std::string& task,
+		const std::string& run);
 
 	template <typename T>
 	void write_data_chunk(streamid_t streamid, const std::vector<double> &timestamps,

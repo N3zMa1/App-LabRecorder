@@ -17,7 +17,11 @@ void write_timestamp(std::ostream &out, double ts) {
 	}
 }
 
-XDFWriter::XDFWriter(const std::string &filename)
+XDFWriter::XDFWriter(const std::string &filename,
+	const std::string& participant,
+	const std::string& session,
+	const std::string& task,
+	const std::string& run)
 #ifndef XDFZ_SUPPORT
 	: file_(filename, std::ios::binary | std::ios::trunc)
 #endif
@@ -36,6 +40,13 @@ XDFWriter::XDFWriter(const std::string &filename)
 	// datetime
 	std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	header << "\n    <datetime>" << std::put_time(std::localtime(&now), "%FT%T%z") << "</datetime>";
+
+	// ---- SESSION METADATA ----
+	header << "\n  <participant>" << participant << "</participant>";
+	header << "\n  <session>" << session << "</session>";
+	header << "\n  <task>" << task << "</task>";
+	header << "\n  <run>" << run << "</run>";
+
 	header << "\n  </info>";
 	_write_chunk(chunk_tag_t::fileheader, header.str());
 }
