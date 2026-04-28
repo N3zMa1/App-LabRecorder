@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 	std::vector<std::string> watchfor;
 	std::map<std::string, int> sync_options;
 	std::cout << "Starting the recording, press Enter to quit" << std::endl;
-	recording r(argv[1], "", "", "", "", std::map<std::string, std::string>(), recordstreams, watchfor, sync_options, true);
+	recording r(argv[1], std::map<std::string, std::string>(), recordstreams, watchfor, sync_options, true);
 	std::cin.get();
 	return 0;
 }

@@ -81,10 +81,9 @@ inline void timed_join_or_detach(
 	}
 }
 recording::recording(const std::string& filename, 
-	const std::string& participant, const std::string& session, const std::string& task, const std::string& run, 
 	const std::map<std::string, std::string>& addtionalInfo, 
 	const std::vector<lsl::stream_info>& streams, const std::vector<std::string>& watchfor, std::map<std::string, int> syncOptions, bool collect_offsets)
-	: file_(filename, participant, session, task, run, addtionalInfo), offsets_enabled_(collect_offsets), unsorted_(false), streamid_(0),
+	: file_(filename, addtionalInfo), offsets_enabled_(collect_offsets), unsorted_(false), streamid_(0),
 	  shutdown_(false), headers_to_finish_(0), streaming_to_finish_(0),
 	  sync_options_by_stream_(std::move(syncOptions)) {
 	// create a recording thread for each stream

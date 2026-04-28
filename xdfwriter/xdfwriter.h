@@ -47,10 +47,7 @@ public:
 	 * @brief XDFWriter Construct a XDFWriter object
 	 * @param filename  Filename to write to
 	 */
-	XDFWriter(const std::string &filename, const std::string& participant,
-		const std::string& session,
-		const std::string& task,
-		const std::string& run,
+	XDFWriter(const std::string &filename,
 		const std::map<std::string, std::string>& additionalInfo);
 
 	template <typename T>
