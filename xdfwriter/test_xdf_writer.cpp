@@ -1,7 +1,7 @@
 #include "xdfwriter.h"
 
 int main(int argc, char **argv) {
-	XDFWriter w("test.xdf", "", "", "", "");
+	XDFWriter w("test.xdf", "", "", "", "", std::map<std::string, std::string>());
 	const uint32_t sid = 0x02C0FFEE;
 	const std::string footer(
 		"<?xml version=\"1.0\"?>"

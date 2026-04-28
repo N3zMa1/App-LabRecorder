@@ -21,8 +21,14 @@ signals:
 	void filename(QString s);
 	void select_all();
 	void select_none();
+	void add_info(QString s);
+	void clear_info();
 
 public slots:
 	void addClient();
 	void handleLine(QString s, QTcpSocket* sock);
+	void onStateChanged(const QString& state);
+
+private:
+	void broadcast(const QString& state);
 };

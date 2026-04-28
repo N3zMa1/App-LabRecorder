@@ -8,6 +8,7 @@
 #include <thread>
 #include <type_traits>
 #include <vector>
+#include <map>
 
 #ifdef XDFZ_SUPPORT
 #include <boost/iostreams/filtering_stream.hpp>
@@ -49,7 +50,8 @@ public:
 	XDFWriter(const std::string &filename, const std::string& participant,
 		const std::string& session,
 		const std::string& task,
-		const std::string& run);
+		const std::string& run,
+		const std::map<std::string, std::string>& additionalInfo);
 
 	template <typename T>
 	void write_data_chunk(streamid_t streamid, const std::vector<double> &timestamps,

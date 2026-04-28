@@ -32,10 +32,30 @@ void RemoteControlSocket::handleLine(QString s, QTcpSocket *sock) {
 			emit select_none();
 		}
 	}
-	sock->write("OK");
+	else if (s.contains("info")) {
+		if (s.contains("clear"))
+			emit clear_info();
+		else
+			emit add_info(s);
+	}
+	sock->write("OK\n");
 	// TODO: select /deselect streams
 	// TODO: send acknowledgement
 	// TODO: get current state
 	//
 	// else this->sender()->sender("Whoops");
+}
+
+void RemoteControlSocket::onStateChanged(const QString& state)
+{
+	broadcast(state);
+}
+
+void RemoteControlSocket::broadcast(const QString& state)
+{
+	for (auto* client : clients) {
+		if (client->state() == QAbstractSocket::ConnectedState) {
+			client->write(state.toUtf8() + "\n");
+		}
+	}
 }

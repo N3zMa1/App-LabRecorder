@@ -59,6 +59,11 @@ private slots:
 	void rcsStartRecording();
 	void rcsStopRecording();
 	void rcsportValueChangedInt(int value);
+	void addInfo(QString s);
+	void clearInfo();
+
+signals:
+	void StateChanged(QString newState);
 
 private:
 	QString replaceFilename(QString fullfile) const;
@@ -81,6 +86,8 @@ private:
 	// QString recFilename;
 	QString legacyTemplate;
 	std::unique_ptr<Ui::MainWindow> ui; // window pointer
+
+	QMap<std::string, std::string> infoMap; // for storing additional info 
 
 	// @Doug1983 added to suppress pop-ups when remotely starting recording
 	// and missing streams or having some unchecked streams

@@ -66,8 +66,7 @@ MainWindow::MainWindow(QWidget *parent, const char *config_file)
 		this->buildFilename();
 	});
 	connect(ui->rootEdit, &QLineEdit::editingFinished, this, &MainWindow::buildFilename);
-	connect(
-		ui->lineEdit_participant, &QLineEdit::editingFinished, this, &MainWindow::buildFilename);
+	connect(ui->lineEdit_participant, &QLineEdit::editingFinished, this, &MainWindow::buildFilename);
 	connect(ui->lineEdit_session, &QLineEdit::editingFinished, this, &MainWindow::buildFilename);
 	connect(ui->lineEdit_acq, &QLineEdit::editingFinished, this, &MainWindow::buildFilename);
 	connect(ui->input_blocktask, &QComboBox::currentTextChanged, this, &MainWindow::buildFilename);
@@ -85,6 +84,7 @@ MainWindow::MainWindow(QWidget *parent, const char *config_file)
 			ui->label_counter->setText("Exp num (%n)");
 		}
 	});
+	connect(ui->btn_clearInfo, &QPushButton::clicked, this, &MainWindow::clearInfo);
 
 	timer = std::make_unique<QTimer>(this);
 	connect(&*timer, &QTimer::timeout, this, &MainWindow::statusUpdate);
@@ -469,13 +469,16 @@ void MainWindow::startRecording() {
 		std::string participant = ui->lineEdit_participant->text().toStdString();
 		std::string session = ui->lineEdit_session->text().toStdString();
 		std::string task = ui->input_blocktask->currentText().toStdString();
-		std::string run = "";
+		std::string run = std::to_string(ui->spin_counter->value());
+		std::map<std::string, std::string> additionalInfo = infoMap.toStdMap();
 
-		currentRecording = std::make_unique<recording>(recFilename.toStdString(), participant, session, task, run, 
+		currentRecording = std::make_unique<recording>(recFilename.toStdString(), participant, session, task, run, additionalInfo,
 			requestedAndAvailableStreams, watchfor, syncOptionsByStreamName, true);
 		ui->stopButton->setEnabled(true);
 		ui->startButton->setEnabled(false);
 		startTime = (int)lsl::local_clock();
+
+		emit StateChanged("recording");
 
 	} else if (!hideWarnings) {
 		QMessageBox::information(
@@ -492,6 +495,9 @@ void MainWindow::stopRecording() {
 		ui->startButton->setEnabled(true);
 		ui->stopButton->setEnabled(false);
 		statusBar()->showMessage("Stopped");
+
+		emit StateChanged("stopped");
+
 	} else if (!hideWarnings) {
 		QMessageBox::information(
 			this, "Not recording", "There is not ongoing recording", QMessageBox::Ok);
@@ -652,6 +658,9 @@ void MainWindow::enableRcs(bool bEnable) {
 		connect(rcs.get(), &RemoteControlSocket::filename, this, &MainWindow::rcsUpdateFilename);
 		connect(rcs.get(), &RemoteControlSocket::select_all, this, &MainWindow::selectAllStreams);
 		connect(rcs.get(), &RemoteControlSocket::select_none, this, &MainWindow::selectNoStreams);
+		connect(rcs.get(), &RemoteControlSocket::add_info, this, &MainWindow::addInfo);
+		connect(rcs.get(), &RemoteControlSocket::clear_info, this, &MainWindow::clearInfo);
+		connect(this, &MainWindow::StateChanged, rcs.get(), &RemoteControlSocket::onStateChanged);
 	}
 	bool oldState = ui->rcsCheckBox->blockSignals(true);
 	ui->rcsCheckBox->setChecked(bEnable);
@@ -663,6 +672,31 @@ void MainWindow::rcsportValueChangedInt(int value) {
         enableRcs(false);  // Will also uncheck box.
 		enableRcs(true);   // Will also check box.
     }
+}
+
+void MainWindow::addInfo(QString s)
+{	
+	QRegularExpression re("{(?P<option>\\w+?):(?P<value>[^}]*)}");
+
+	QRegularExpressionMatchIterator i = re.globalMatch(s);
+	while (i.hasNext()) {
+		QRegularExpressionMatch match = i.next();
+		QString option = match.captured("option");
+		QString value = match.captured("value");
+		infoMap[option.toStdString()] = value.toStdString();
+	}
+
+	ui->list_addtionalInfo->clear();
+	for (auto [key, value] : infoMap.asKeyValueRange()) {
+		std::string info = key + " : " + value;
+		ui->list_addtionalInfo->addItem(QString(info.c_str()));
+	}
+}
+
+void MainWindow::clearInfo()
+{
+	infoMap.clear();
+	ui->list_addtionalInfo->clear();
 }
 
 void MainWindow::rcsStartRecording() {
