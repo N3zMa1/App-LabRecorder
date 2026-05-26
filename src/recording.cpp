@@ -309,6 +309,7 @@ void recording::record_offsets(
 			} catch (lsl::timeout_error &) {
 				std::cerr << "Timeout in time correction query for stream " << streamid
 						  << std::endl;
+				break;
 			}
 			file_.write_stream_offset(streamid, now, offset);
 			// also append to the offset lists
